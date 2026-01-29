@@ -1,7 +1,6 @@
 import streamlit as st      
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.schema import SystemMessage, HumanMessage
 
 # 環境変数を読み込む
 load_dotenv()
@@ -48,14 +47,11 @@ def get_llm_response(user_input: str, expert_type: str) -> str:
         # システムメッセージを取得
         system_prompt = get_expert_prompt(expert_type)
         
-        # メッセージを構築
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=user_input)
-        ]
+        # プロンプトを構築
+        prompt = f"{system_prompt}\n\nユーザーの質問: {user_input}"
         
         # LLMに送信
-        response = llm.invoke(messages)
+        response = llm.invoke(prompt)
         return response.content
         
     except Exception as e:
